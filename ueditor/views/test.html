@@ -58,9 +58,9 @@
                 </span> 
                 <div class="input-wrap">
                     <input type="text" ref="inputTag" class="input-tag" :placeholder="placeholder"
-                    v-model="text"
+                    v-model.trim="text"
                     @keydown.space="addEmail(text)"
-                    @keydown.enter="" 
+                    @keydown.enter="enterAddEmail" 
                     @keydown.delete="deleteTag(tagArray.length - 1)"
                     @keydown="upAndDownSelect($event)"
                     @blur="blur"
@@ -69,7 +69,7 @@
                         v-if="showSearch">
                         <ul class="search-list">
                             <li v-for="(data, index) in searchList" 
-                                @click="addEmail(data.email)"
+                                @click="clickAddEmail(data.email)"
                                 :class="{active: activeIndex == index}">
                                 {{data.name}}<span><{{data.email}}></span>
                             </li>

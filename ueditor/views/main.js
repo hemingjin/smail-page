@@ -21,7 +21,8 @@ Vue.component("input-component", {
       offsetLeft: "",
       showSearch: false, //是否展示搜索
       searchList: [], //实时搜索结果展示
-      activeIndex: -1
+      activeIndex: -1,
+      selectedResult: ''
     };
   },
   created() {
@@ -41,7 +42,7 @@ Vue.component("input-component", {
     //添加
     addEmail(text) {
       this.setScroll();
-
+      console.log(text)
       if (text) {
         if (!this.isEmail(text)) {
           this.source.push({ name: text });
@@ -54,6 +55,20 @@ Vue.component("input-component", {
 
       this.text = "";
       this.showSearch = false;
+    },
+    // 搜索框，回车键选中添加
+    enterAddEmail() {
+      if (this.activeIndex != -1) {
+        this.addEmail(this.selectedResult);
+        this.activeIndex = -1;
+      } else {
+        this.addEmail(this.text);
+      }
+    },
+    //搜索框，点击选中添加
+    clickAddEmail(email) {
+      this.$refs.inputTag.focus();
+      this.addEmail(email);
     },
     //设置滚动条滚到最下方
     setScroll() {
@@ -101,6 +116,7 @@ Vue.component("input-component", {
         }
       }
       console.log(this.activeIndex);
+      this.selectedResult = this.searchList[this.activeIndex].email;
     },
     //删除
     deleteTag(index) {
@@ -121,10 +137,10 @@ Vue.component("input-component", {
     //失去焦点
     blur() {
       console.log("触发失焦事件");
-      //   if (this.text) {
-      //     this.addEmail(this.text);
-      //   }
-      //this.showSearch = false;
+        // if (this.text) {
+        //   this.addEmail(this.text);
+        // }
+      this.showSearch = false;
 
       this.isfocus = false;
     },
