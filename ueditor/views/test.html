@@ -47,7 +47,7 @@
             </div>
         </div>
     </div>
-
+    <!--component template begin-->
     <script type="text/x-template" id="inputComponent">
             <div class="input-tag-wrap" ref="inputTagWrap" :class="{focus: isfocus}">
                 <span class="tag-item" v-for="(tag, index) in tagArray" 
@@ -59,14 +59,18 @@
                 <div class="input-wrap">
                     <input type="text" ref="inputTag" class="input-tag" :placeholder="placeholder"
                     v-model="text"
-                    @keydown.enter="addEmail(text)" 
+                    @keydown.space="addEmail(text)"
+                    @keydown.enter="" 
                     @keydown.delete="deleteTag(tagArray.length - 1)"
+                    @keydown="upAndDownSelect($event)"
                     @blur="blur"
                     @focus="focus"/>
                     <div class="search-view" :style="{top: offsetTop, left: offsetLeft}" 
                         v-if="showSearch">
                         <ul class="search-list">
-                            <li v-for="(data, index) in searchList" @click="addEmail(data.email)">
+                            <li v-for="(data, index) in searchList" 
+                                @click="addEmail(data.email)"
+                                :class="{active: activeIndex == index}">
                                 {{data.name}}<span><{{data.email}}></span>
                             </li>
                         </ul>
@@ -74,6 +78,7 @@
                 </div>
             </div>
         </script>
+        <!--component template end-->
     <script src="main.js"></script>
 </body>
 
