@@ -18,63 +18,69 @@
                 <span>收件人:</span>
             </div>
             <div class="input-block">
-                <input-component :source.sync="source" :placeholder="placeholder1"></input-component>
+                <input-component :source.sync="reciverData" :placeholder="placeholder1"></input-component>
             </div>
+            <div class="add" @click="addReciverData"></div>
         </div>
         <div class="input-item clearfix">
             <div class="input-title">
                 <span>抄  送:</span>
             </div>
             <div class="input-block">
-                <input-component :source.sync="source" :placeholder="placeholder1"></input-component>
-                <!--<input-component :source.sync="source" :placeholder="placeholder2"></input-component>-->
+                <input-component :source.sync="copyData" :placeholder="placeholder1"></input-component>
             </div>
+            <div class="add" @click="addCopyData"></div>
         </div>
         <div class="input-item clearfix">
             <div class="input-title">
                 <span>密  送:</span>
             </div>
             <div class="input-block">
-                <!--<input-component :source.sync="source" :placeholder="placeholder3"></input-component>-->
+                <input-component :source.sync="secrityData" :placeholder="placeholder3"></input-component>
             </div>
+            <div class="add" @click="addSecrityData"></div>
         </div>
         <div class="input-item clearfix">
             <div class="input-title">
                 <span>主  题:</span>
             </div>
             <div class="input-block">
-                <input class="input-i" type="text" name="reciver" value="">
+                <input class="input-i" type="text" name="subjects">
             </div>
         </div>
     </div>
     <!--component template begin-->
-    <script type="text/x-template" id="inputComponent">
+    <script type="text/x-template" id="inputComponent" style="display: none">
             <div class="input-tag-wrap" ref="inputTagWrap" :class="{focus: isfocus}">
                 <span class="tag-item" v-for="(tag, index) in tagArray" 
                     :class="{error: tag.isError, selected: tag.isSelected}" 
                     @click="selectTag(index)">
-                    {{tag.name}}
-                    <i @click="deleteTag(index)">x</i>
+                    {{tag.email}}
+                    <!--<i @click="deleteTag(index)">x</i>-->
                 </span> 
                 <div class="input-wrap">
-                    <input type="text" ref="inputTag" class="input-tag" :placeholder="placeholder"
+                    <input type="text" ref="inputTag" class="input-tag"
                     v-model.trim="text"
-                    @keydown.space="addEmail(text)"
+                    @keydown.space="spaceAddEmail"
                     @keydown.enter="enterAddEmail" 
+                    @keydown.tab="enterAddEmail"
                     @keydown.delete="deleteTag(tagArray.length - 1)"
                     @keydown="upAndDownSelect($event)"
                     @blur="blur"
                     @focus="focus"/>
-                    <div class="search-view" :style="{top: offsetTop, left: offsetLeft}" 
+                    <!--search result begin-->
+                    <div class="search-view" :style="{width: searchStyle.width, top: searchStyle.top, left: searchStyle.left}" 
                         v-if="showSearch">
                         <ul class="search-list">
                             <li v-for="(data, index) in searchList" 
                                 @click="clickAddEmail(data.email)"
+                                @mouseover="handleHover(index)"
                                 :class="{active: activeIndex == index}">
                                 {{data.name}}<span><{{data.email}}></span>
                             </li>
                         </ul>
                     </div>
+                    <!--search result end-->
                 </div>
             </div>
         </script>
