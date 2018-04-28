@@ -17,7 +17,8 @@ Vue.component("input-component", {
       isfocus: false,
       text: "",
       tagArray: [],
-      searchStyle: {  //搜索框的偏移
+      searchStyle: {
+        //搜索框的偏移
         top: "",
         left: "",
         width: ""
@@ -25,7 +26,7 @@ Vue.component("input-component", {
       showSearch: false, //是否展示搜索
       searchList: [], //实时搜索结果展示
       activeIndex: -1,
-      selectedResult: ''
+      selectedResult: ""
     };
   },
   created() {
@@ -33,24 +34,24 @@ Vue.component("input-component", {
   },
   mounted() {
     var self = this;
-    document.addEventListener('click', function(e){
-      if(e.target !== self.$refs.inputTag){
+    document.addEventListener("click", function(e) {
+      if (e.target !== self.$refs.inputTag) {
         self.showSearch = false;
         self.activeIndex = -1;
       }
-    })
+    });
   },
   methods: {
     //初始化数据
     initSource(data) {
       data.forEach(item => {
-        if(!this.isEmail(item.email)){
+        if (!this.isEmail(item.email)) {
           this.tagArray.push({
             email: item.email,
             isError: true,
             isSelected: false
           });
-        }else {
+        } else {
           this.tagArray.push({
             email: item.email,
             isError: false,
@@ -62,8 +63,8 @@ Vue.component("input-component", {
     //添加
     addEmail(text) {
       //this.setScroll();
-      if (text) { 
-         this.source.push({ email: text });
+      if (text) {
+        this.source.push({ email: text });
       }
       this.$refs.inputTag.value = "";
       this.text = "";
@@ -125,17 +126,23 @@ Vue.component("input-component", {
         }
       });
     },
+    //双击编辑
+    doubleSelect(email, index) {
+      console.log(email)
+      this.deleteTag(index);
+      this.text = email;
+    },
     //删除
     deleteTag(index) {
       if (index >= 0 && !this.text) {
-        this.tagArray.splice(index, 1);
+        this.source.splice(index, 1);
       }
     },
     //上下键选择
     upAndDownSelect(e) {
       if (this.showSearch) {
-        if (e.keyCode == 40 || e.keyCode ==39) {
-          console.log('down')
+        if (e.keyCode == 40 || e.keyCode == 39) {
+          console.log("down");
           //down
           this.activeIndex++;
           if (this.activeIndex > this.searchList.length - 1) {
@@ -149,11 +156,11 @@ Vue.component("input-component", {
           }
         }
       }
-      if(this.activeIndex != -1){
+      if (this.activeIndex != -1) {
         this.selectedResult = this.searchList[this.activeIndex].email;
       }
     },
-    
+
     //获得焦点
     focus() {
       if (this.tagArray.length > 0) {
@@ -165,6 +172,7 @@ Vue.component("input-component", {
     },
     //失去焦点
     blur() {
+      // this.text = "";
       this.activeIndex = -1;
       this.isfocus = false;
     },
@@ -173,33 +181,46 @@ Vue.component("input-component", {
       var inputBounds = this.$refs.inputTag.getBoundingClientRect();
       this.searchStyle.top = inputBounds.height + inputBounds.top + "px";
       //this.offsetLeft = inputBounds.left + "px";
-      this.searchStyle.left = 75+10 + "px";
-      this.searchStyle.width = this.$refs.inputTagWrap.offsetWidth + 'px';
+      this.searchStyle.left = 75 + 10 + "px";
+      this.searchStyle.width = this.$refs.inputTagWrap.offsetWidth + "px";
     },
     //input内容变化触发事件
     inputChange(text) {
       this.setSearchOffset();
+      var reg = new RegExp(text, "i");
+      this.searchList = [];
       this.$http
         .get("views/data/email.json")
         .then(res => {
-          if(res.data.data.length > 0){
-            this.searchList = res.data.data;
+          res.data.data.filter(item => {
+            if (item.email.match(reg) || item.name.match(reg)) {
+              this.searchList.push(item);
+              //添加关键词字段， 用来高亮显示
+              this.searchList.forEach( item => {
+                item.query = text;
+
+                item.nameStr = item.name.replace(text, '<b>' + text + '</b>');
+                item.emailStr = item.email.replace(text, '<b>' + text + '</b>');
+              })
+            }
+          });
+          
+          if (this.searchList.length > 0) {
             this.showSearch = true;
             this.activeIndex = 0;
             this.selectedResult = this.searchList[this.activeIndex].email;
-          }else{
-            this.addEmail(text)
+          } else {
+            this.activeIndex = -1;
+            this.showSearch = false;
+            //this.addEmail(text);
           }
-          for (var i = 0; i < res.data.data.length; i++) {}
         })
         .catch(err => {
           console.log(err);
         });
     },
     //展示搜索结果
-    showSearchResult() {
-
-    },
+    showSearchResult() {},
     //邮箱格式验证
     isEmail(str) {
       var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
@@ -217,8 +238,8 @@ Vue.component("input-component", {
     source() {
       this.tagArray = [];
       this.initSource(this.source);
-      if(this.source.length > 0){
-        this.placeholder = ''
+      if (this.source.length > 0) {
+        this.placeholder = "";
       }
     }
   }
@@ -239,13 +260,12 @@ var app = new Vue({
   },
   methods: {
     addReciverData() {
-      this.reciverData.push({email: 'xxxxx@qq.com'}, {email: '1293004876@aa.com'})
+      this.reciverData.push(
+        { email: "xxxxx@qq.com" },
+        { email: "1293004876@aa.com" }
+      );
     },
-    addCopyData() {
-
-    },
-    addSecrityData() {
-
-    }
+    addCopyData() {},
+    addSecrityData() {}
   }
 });

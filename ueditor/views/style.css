@@ -167,5 +167,8 @@ input {
 }
  
 .search-list li span{
-    margin-left: 5px;
+    padding: 0 5px;
+}
+.search-list li span i{
+  font-style: normal
 }

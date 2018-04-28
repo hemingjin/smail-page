@@ -74,6 +74,7 @@
                 <span class="tag-item" v-for="(tag, index) in tagArray" 
                     :class="{error: tag.isError, selected: tag.isSelected}" 
                     @click="selectTag(index)">
+                    <!--@dblclick="doubleSelect(tag.email, index)">-->
                     {{tag.email}}
                     <!--<i @click="deleteTag(index)">x</i>-->
                 </span> 
@@ -95,7 +96,7 @@
                                 @click="clickAddEmail(data.email)"
                                 @mouseover="handleHover(index)"
                                 :class="{active: activeIndex == index}">
-                                {{data.name}}<span><{{data.email}}></span>
+                                <span v-html="data.nameStr"></span><span><<i v-html="data.emailStr"></i>></span>
                             </li>
                         </ul>
                     </div>
